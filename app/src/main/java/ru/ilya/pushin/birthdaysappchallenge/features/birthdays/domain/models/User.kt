@@ -4,6 +4,7 @@ import java.util.Date
 
 data class User(
     val name: String,
+    val shortName: String,
     val dob: Date,
     val age: Int
 )

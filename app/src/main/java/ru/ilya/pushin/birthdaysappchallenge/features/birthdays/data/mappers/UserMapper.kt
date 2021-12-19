@@ -9,20 +9,32 @@ class UserMapper @Inject constructor() {
 
     fun mapEntitiesToUsers(entities: List<Entity>): List<User> {
         return entities.map {
+            val name = composeName(it.name)
             User(
-                name = composeName(it.name),
+                name = name,
+                shortName = shortenName(name),
                 dob = it.dob.date,
                 age = it.dob.age
             )
         }
     }
 
-    fun composeName(name: Name) : String {
+    internal fun composeName(name: Name): String {
         return buildString {
-            append(name.first)
+            append(name.first.trim())
             if (name.last.isNotBlank()) {
                 append(" ")
-                append(name.last)
+                append(name.last.trim())
+            }
+        }
+    }
+
+    internal fun shortenName(name: String): String {
+        val words = name.split(" ")
+
+        return buildString {
+            words.forEach {
+                append(it.first().uppercase())
             }
         }
     }
