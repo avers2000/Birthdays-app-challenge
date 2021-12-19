@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -26,7 +26,7 @@ import java.text.SimpleDateFormat
 @Composable
 fun BirthdaysListComposable(
     viewModel: BirthdaysListViewModel = hiltViewModel(),
-    navigateToInfoScreen: (user: User) -> Unit
+    navigateToInfoScreen: (user: Int) -> Unit
 ) {
     val list by viewModel.users.observeAsState(listOf())
 
@@ -37,11 +37,16 @@ fun BirthdaysListComposable(
 }
 
 @Composable
-internal fun UsersList(list: List<User>, navigateToInfoScreen: (user: User) -> Unit) {
+internal fun UsersList(list: List<User>, navigateToInfoScreen: (user: Int) -> Unit) {
     LazyColumn {
-        items(items = list, key = { it.hashCode() }) {
+        itemsIndexed(
+            items = list, key = { index, item ->
+                item.hashCode()
+            }
+        ) { index, item ->
             UserRow(
-                user = it,
+                user = item,
+                index = index,
                 navigateToInfoScreen = navigateToInfoScreen
             )
         }
@@ -49,14 +54,14 @@ internal fun UsersList(list: List<User>, navigateToInfoScreen: (user: User) -> U
 }
 
 @Composable
-internal fun UserRow(user: User, navigateToInfoScreen: (user: User) -> Unit) {
+internal fun UserRow(user: User, index: Int, navigateToInfoScreen: (user: Int) -> Unit) {
     val dob = remember(user.dob) { SimpleDateFormat("dd-MM-yyyy").format(user.dob) }
 
     Row(
         modifier = Modifier
             .height(64.dp)
             .fillMaxWidth()
-            .clickable { navigateToInfoScreen(user) }
+            .clickable { navigateToInfoScreen(index) }
             .padding(8.dp)
     ) {
         Text(

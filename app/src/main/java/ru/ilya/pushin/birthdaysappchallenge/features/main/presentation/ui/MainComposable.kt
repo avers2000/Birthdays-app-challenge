@@ -4,10 +4,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.navArgument
 import androidx.navigation.compose.rememberNavController
-import ru.ilya.pushin.birthdaysappchallenge.features.birthdays.domain.models.User
 import ru.ilya.pushin.birthdaysappchallenge.features.birthdays.presentation.ui.BirthdayInfoComposable
 import ru.ilya.pushin.birthdaysappchallenge.features.birthdays.presentation.ui.BirthdaysListComposable
 import ru.ilya.pushin.birthdaysappchallenge.features.main.presentation.navigation.Screen
@@ -22,19 +23,17 @@ fun Main(
         NavHost(navController = navController, startDestination = Screen.BirthdaysList.route) {
             composable(Screen.BirthdaysList.route) {
                 BirthdaysListComposable(
-                    navigateToInfoScreen = { user ->
-                        navController.currentBackStackEntry?.arguments?.putSerializable(Screen.BirthdayInfo.route, user)
-                        navController.navigate(Screen.BirthdayInfo.route)
+                    navigateToInfoScreen = { userId ->
+                        navController.navigate("birthday-info/$userId")
                     }
                 )
             }
-            composable(Screen.BirthdayInfo.route) {
-                val user = navController.previousBackStackEntry?.arguments?.getSerializable(
-                    Screen.BirthdayInfo.route
-                ) as User
-
+            composable(
+                "birthday-info/{userId}",
+                arguments = listOf(navArgument("userId") { type = NavType.IntType })
+            ) {
                 BirthdayInfoComposable(
-                    user = user,
+                    userId = it.arguments?.getInt("userId") ?: 0,
                     navigateBack = { navController.popBackStack() }
                 )
             }

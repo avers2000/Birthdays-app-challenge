@@ -18,7 +18,14 @@ class UserRepository @Inject constructor(
     private val mapper: UserMapper
 ) {
 
-    suspend fun getUsers() : List<User> = withContext(dispatcher) {
-        mapper.mapEntitiesToUsers(api.getUsers(NUMBER, SEED, INCLUDE).results)
+    private val inMemoryCache = mutableListOf<User>()
+
+    suspend fun getUsers(): List<User> = withContext(dispatcher) {
+        if (inMemoryCache.isNotEmpty()) {
+            return@withContext inMemoryCache
+        }
+
+        inMemoryCache.addAll(mapper.mapEntitiesToUsers(api.getUsers(NUMBER, SEED, INCLUDE).results))
+        inMemoryCache
     }
 }
