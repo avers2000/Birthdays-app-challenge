@@ -3,6 +3,7 @@ package ru.ilya.pushin.birthdaysappchallenge.features.birthdays.presentation.ui
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -38,7 +39,7 @@ fun BirthdaysListComposable(
 @Composable
 internal fun UsersList(list: List<User>, navigateToInfoScreen: (user: User) -> Unit) {
     LazyColumn {
-        items(list) {
+        items(items = list, key = { it.hashCode() }) {
             UserRow(
                 user = it,
                 navigateToInfoScreen = navigateToInfoScreen
@@ -54,6 +55,7 @@ internal fun UserRow(user: User, navigateToInfoScreen: (user: User) -> Unit) {
     Row(
         modifier = Modifier
             .height(64.dp)
+            .fillMaxWidth()
             .clickable { navigateToInfoScreen(user) }
             .padding(8.dp)
     ) {
