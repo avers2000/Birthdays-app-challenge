@@ -1,4 +1,4 @@
-package ru.ilya.pushin.birthdaysappchallenge.ui.theme
+package ru.ilya.pushin.birthdaysappchallenge.core.theme
 
 import androidx.compose.ui.graphics.Color
 
