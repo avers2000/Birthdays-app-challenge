@@ -1,5 +1,6 @@
 package ru.ilya.pushin.birthdaysappchallenge.features.birthdays.presentation.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -17,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import ru.ilya.pushin.birthdaysappchallenge.features.birthdays.domain.models.User
 import ru.ilya.pushin.birthdaysappchallenge.features.birthdays.presentation.viewmodel.BirthdaysListViewModel
 import java.text.SimpleDateFormat
@@ -25,31 +25,36 @@ import java.text.SimpleDateFormat
 @Composable
 fun BirthdaysListComposable(
     viewModel: BirthdaysListViewModel = hiltViewModel(),
-    navController: NavController
+    navigateToInfoScreen: (user: User) -> Unit
 ) {
     val list by viewModel.users.observeAsState(listOf())
 
     UsersList(
-        list = list
+        list = list,
+        navigateToInfoScreen = navigateToInfoScreen
     )
 }
 
 @Composable
-internal fun UsersList(list: List<User>) {
+internal fun UsersList(list: List<User>, navigateToInfoScreen: (user: User) -> Unit) {
     LazyColumn {
         items(list) {
-            UserRow(user = it)
+            UserRow(
+                user = it,
+                navigateToInfoScreen = navigateToInfoScreen
+            )
         }
     }
 }
 
 @Composable
-internal fun UserRow(user: User) {
+internal fun UserRow(user: User, navigateToInfoScreen: (user: User) -> Unit) {
     val dob = remember(user.dob) { SimpleDateFormat("dd-MM-yyyy").format(user.dob) }
 
     Row(
         modifier = Modifier
             .height(64.dp)
+            .clickable { navigateToInfoScreen(user) }
             .padding(8.dp)
     ) {
         Text(
